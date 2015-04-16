@@ -1,0 +1,7 @@
+boost_shared_ptr
+boost_scoped_ptr
+boost_intrusive_ptr
+std_unique_ptr
+std_unique_ptr_ownership
+std_weak_ptr
+.DS_STORE
