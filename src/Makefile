@@ -1,5 +1,5 @@
 cc=clang++
-boostpath=/usr/local/Cellar/boost/1.57.0/include
+boostpath=/usr/local/Cellar/boost/1.58.0/include
 cflags=-std=c++11
 
 all: clean boost_scoped_ptr boost_shared_ptr boost_intrusive_ptr \

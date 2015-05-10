@@ -44,11 +44,12 @@
  \begin{itemize}
   \item Motivation
   \item Shared Pointer (Smart Pointer)
-  \item Reference Counting
-  \item Vor- und Nachteile der vorgestellten Konzepte
+  \item Shared Pointer und Arrays
+  \item Intrusive Pointer (Reference Counting)
  \end{itemize}
 \end{frame}
 
+% Motivation
 \begin{frame}
  \frametitle{Motivation}
  \begin{itemize}
@@ -71,44 +72,17 @@
  \end{itemize}
 \end{frame}
 
-%%% Pointer aus boost
-%\begin{frame}[fragile]
-%\frametitle{Pointer aus Boost}
-%  \begin{itemize}
-%    \item boost::scoped\_ptr
-%    \item boost::scoped\_array
-%    \item boost::shared\_ptr
-%    \item boost::shared\_array
-%    \item boost::weak\_ptr
-%    \item boost::intrusive\_ptr
-%  \end{itemize}
-%\end{frame}
-
-%%% Pointer aus der STL
-%\begin{frame}
-% \frametitle{STL Pointer}
-%  \begin{itemize}
-%   \item std::shared\_ptr
-%   \item std::unique\_ptr
-%   \item std::weak\_ptr
-%   \item std::auto\_ptr \textit{(veraltet)}
-%  \end{itemize}
-%\end{frame}
-
+% Basics
 \begin{frame}
   \frametitle{Die Basics}
   \begin{itemize}
     \item RAW Pointer \textit{int* p = new int(2);}
     \item Smart Pointer als Wrapper um RAW Pointer
-    \item Für Arrays die passende \textit{\_array} Klasse verwenden
+    %\item Für Arrays die passende \textit{\_array} Klasse verwenden
     \item Dynamisch allokierter Speicher liegt auf dem Heap
     \item Frage: Ist der Unterschied zwischen Heap und Stack bewusst?
   \end{itemize}	
 \end{frame}
-
-%% TODO: Allgemein boost::ptr entfernen und durch allgemeines
-%% Konzept ersetzen, dann sagen, dass eine mögliche implementierung
-%% Die boost Version oder die STL Version sein kann.
 
 % Scoped/Unique Pointer
 \begin{frame}[fragile]
@@ -129,18 +103,18 @@
  Jedoch unterscheiden sich beide voneinander
 \end{frame}
 
-
+% Scoped/Unique Pointer
 \begin{frame}
  \frametitle{Scoped / Unique Pointer}
  \begin{itemize}
-  \item Wann sollte boost::scoped\_ptr verwendet werden?
+  \item Wann sollte \textit{boost::scoped\_ptr} verwendet werden?
    \begin{itemize}
  	\item Bei komplexerem Programflow mit mehreren Return Punkten
    \end{itemize}
-  \item Wann sollte std::unique\_ptr verwendet werden?
+  \item Wann sollte \textit{std::unique\_ptr} verwendet werden?
   \begin{itemize}
    \item Wenn bspw. mit einer Bibliothek gearbeitet wird, die bei Aufruf Speicher allokiert
-   \item Kann auch wie boost::scoped\_ptr genutzt werden
+   \item Kann auch wie \textit{boost::scoped\_ptr} genutzt werden
    \item Zusätzliche Möglichkeit des Transfer of Ownership
   \end{itemize}
  \end{itemize}
@@ -217,8 +191,8 @@ int main()
  \end{itemize}
  Implementierungen:
  \begin{itemize}
- 	\item std::shared\_ptr
- 	\item boost::shared\_ptr
+ 	\item \textit{std::shared\_ptr}
+ 	\item \textit{boost::shared\_ptr}
  \end{itemize}
 \end{frame}
 
@@ -234,13 +208,12 @@ int main()
  \begin{itemize}
   \item Kann aus einem \textit{shared\_ptr} erstellt werden
   \item Erhöht nicht den Referenzzähler (also nicht wie \textit{shared\_ptr})
-  % TODO: text in klammern anders machen
-  \item Kann einen \textit{shared\_ptr} erstellen \textit{(per `lock()` oder shared\_ptr Konstruktor)}
+  \item Kann einen \textit{shared\_ptr} erstellen %\textit{(per `lock()` oder shared\_ptr Konstruktor)}
  \end{itemize}
  Implementierungen:
  \begin{itemize}
- 	\item std::weak\_ptr
- 	\item boost::weak\_ptr
+ 	\item \textit{std::weak\_ptr}
+ 	\item \textit{boost::weak\_ptr}
  \end{itemize}
 \end{frame}
 
@@ -250,16 +223,36 @@ int main()
  \begin{itemize}
   \item shared\_ptr
   \begin{itemize}
-   \item Wenn das Objekt auf das gezeigt wird besessen wird
+   \item Ist verantwortlich für das löschen des Objektes
    \item Nicht definiertes Verhalten, wenn Objekt nicht existiert
    \item Es muss sichergestellt werden, dass das Objekt existiert
   \end{itemize}
   \item weak\_ptr
   \begin{itemize}
-   \item Wenn das Objekt aus das gezeigt wird nicht besessen wird
+   \item Wenn nicht verantwortlich für löschen des Objektes
    \item Definiertes Verhalten, wenn Objekt nicht existiert
   \end{itemize}
  \end{itemize}
+\end{frame}
+
+% Shared Pointer und Arrays
+\begin{frame}[fragile]
+\frametitle{Shared Pointer und Arrays}
+\begin{itemize}
+	\item \textit{boost::shared\_ptr} kann erst ab Version 1.53 für Arrays verwendet werden
+	\item \textit{std::shared\_ptr} kann immer für Arrays verwendet werden
+	\item Jedoch muss ein \textit{custom deleter} verwendet werden
+\end{itemize}
+\begin{lstlisting}
+// Array mit 20 Ints,    allokation         custom deleter
+std::shared_ptr<int> sp(new int[20], std::default_delete<int[]>());
+
+// Custom deleter kann auch per Lambda spezifiziert werden
+std::shared_ptr<int> sp(new int[20], [](int* p) { delete[] p; } );
+
+// Unique PTR ruft automatisch korrekten deleter auf
+std::unique_ptr<int[]> uptr(new int[20]);
+\end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -295,7 +288,7 @@ int main() {
  \frametitle{boost::intrusive\_ptr}
  \begin{itemize}
    \item Referenzzähler in Klasse eingebaut \tiny (oft durch Vererbung/Interface)\normalsize
-   \item Referenzzähler ist normaler Integer
+   \item Referenzzähler ist normaler unsigned Integer
    \item Gleichviel Speicherverbrauch wie RAW-Pointer
    \item Kein Overhead (im Vergleich zum \textit{shared\_ptr})
    \item Wird auch oft ohne Boost implementiert, damit keine Boost-dependency
