@@ -4,4 +4,5 @@ boost_intrusive_ptr
 std_unique_ptr
 std_unique_ptr_ownership
 std_weak_ptr
+own_shared_ptr
 .DS_STORE
