@@ -46,6 +46,7 @@
   \item Shared Pointer (Smart Pointer)
   \item Shared Pointer und Arrays
   \item Intrusive Pointer (Reference Counting)
+  \item Implementierung von Shared Pointern
  \end{itemize}
 \end{frame}
 
@@ -315,6 +316,30 @@ int main() {
  	\item Hat immer einen Referenz Counter, kann nicht beliebig abgeschaltet werden
  	\item D.h. nur für Heap Objekte Interessant
  \end{itemize}
+\end{frame}
+
+% Implementierung von shared pointern
+\begin{frame}
+ \frametitle{Implementierung von Shared Pointern}
+ \begin{itemize}
+ 	\item Template Klasse die intern beliebigen Typen speichern kann
+ 	\item Besteht aus 2 Objekten im Heap
+ 	\item 1) Referenzzähler
+ 	\item 2) Pointer auf die Daten
+ 	\item Shared Pointer auf gleichen PTR teilen sich gleichen Referenzzähler
+ \end{itemize}
+\end{frame}
+
+% Implementierung von shared pointern
+\begin{frame}
+ \frametitle{Implementierung von Shared Pointern}
+ \includegraphics[scale=.6]{own_sp_classdiagram}
+\end{frame}
+
+% Implementierung von shared pointern
+\begin{frame}
+ \frametitle{Implementierung von Shared Pointern}
+ \includegraphics[scale=.2]{own_sp.png}
 \end{frame}
 
 \begin{frame}
